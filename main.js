@@ -7,6 +7,7 @@ var _log = [];
 var asked_fps;
 var controls = [];
 var logControls = false;
+var logCount;
 
 document.onkeydown = function (e) {
     var exits = false;
@@ -38,8 +39,8 @@ function log(str) {
 function resetLog() {
     if (!showLog) return;
 
-    if (_log.length > 20) {
-        _log.splice(21, _log.length - 21)
+    if (_log.length > logCount) {
+        _log.splice(logCount + 1, _log.length - (logCount + 1))
     }
 
     ctx.fillStyle = "black";
@@ -152,17 +153,18 @@ function draw() {
     resetLog();
 }
 
-function settings(_FPS, _DEBUG, _CONTROLS) {
+function settings(_FPS, _DEBUG, _CONTROLS, _COUNT) {
     asked_fps = 1000 / _FPS;
     showLog = _DEBUG;
     logControls = _CONTROLS;
+    logCount = _COUNT;
 }
 
 function kickstart() {
     // Initialize
 
-    //       FPS DEBUG LOG_CONTROLS
-    settings(30, true, false);
+    //       FPS, DEBUG, LOG_CONTROLS, LOG_COUNT
+    settings(30, true, false, 20);
     
     //                PATH WIDTH HEIGHT
     // initializeImage("", 000, 000);
