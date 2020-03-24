@@ -1,7 +1,7 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
 
-var toDraw = []; // {type: "", x: , y: , width: , height: , stroke: , fill: , style: , content: }
+var toDraw = []; // {type: "", x: , y: , width: , height: , stroke: , fill: , style: "", content: "", imageIndex}
 var showLog = false;
 var _log = [];
 var asked_fps;
@@ -19,30 +19,9 @@ document.onkeydown = function (e) {
     if (!exits) {
         controls.push(e.key);
     }
-
-    /*switch (e.key) {
-        case "F10": {
-            canvas.requestFullscreen();
-            break;
-        }
-        case "ArrowRight": {
-            controls[0] = true;
-            break;
-        }
-        case "ArrowLeft": {
-            controls[1] = true;
-            break;
-        }
-        case "ArrowUp": {
-            controls[2] = true;
-            break;
-        }
-        case "ArrowDown": {
-            controls[3] = true;
-            break;
-        }
-    }*/
 }
+
+var images = [];
 
 document.onkeyup = function (e) {
     controls.forEach(control => {
@@ -50,24 +29,6 @@ document.onkeyup = function (e) {
             controls.splice(controls.indexOf(control), controls.indexOf(control));
         }
     })
-    /*switch (e.key) {
-        case "ArrowRight": {
-            controls[0] = false;
-            break;
-        }
-        case "ArrowLeft": {
-            controls[1] = false;
-            break;
-        }
-        case "ArrowUp": {
-            controls[2] = false;
-            break;
-        }
-        case "ArrowDown": {
-            controls[3] = false;
-            break;
-        }
-    }*/
 }
 
 function log(str) {
@@ -89,10 +50,12 @@ function resetLog() {
     }
 }
 
-function initializeImage(path) {
+function initializeImage(path, width, height) {
     log("(kickstart) initializeImage: Image " + path);
-    var img = new Image();
+    var img = new Image(width, height);
     img.src = path;
+
+    images.push(img);
 }
 
 function initialize() {
@@ -173,6 +136,14 @@ function draw() {
                 if (element.stroke) {
                     ctx.strokeText(element.content, element.x, element.y);
                 }
+            case "image":
+                if (!element.imageIndex) {
+                    return log("(draw) Context 2D: Could not draw image. No index specified.");
+                }
+
+                var img = images[element.imageIndex];
+                ctx.drawImage(img, element.x, element.y)
+                break;
             default:
                 break;
         }
@@ -193,8 +164,8 @@ function kickstart() {
     //       FPS DEBUG LOG_CONTROLS
     settings(30, true, false);
     
-    //                PATH
-    // initializeImage("");
+    //                PATH WIDTH HEIGHT
+    // initializeImage("", 000, 000);
 
     // START
 
