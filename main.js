@@ -128,7 +128,6 @@ function draw() {
                 }   
                 break;
             case "text":
-                console.log("text");
                 if (element.fill) {
                     ctx.fillText(element.content, element.x, element.y);
                 }
@@ -136,6 +135,7 @@ function draw() {
                 if (element.stroke) {
                     ctx.strokeText(element.content, element.x, element.y);
                 }
+                break;
             case "image":
                 if (!element.imageIndex) {
                     return log("(draw) Context 2D: Could not draw image. No index specified.");
