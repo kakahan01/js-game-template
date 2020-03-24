@@ -8,11 +8,12 @@ First of all we need to set up our settings. Which is pretty easy.
 
 Scroll all the way down. You see the settings function.
 ```js
-settings(FPS, LOGS, LOG_CONTROLS);
+settings(FPS, LOGS, LOG_CONTROLS, LOG_COUNT);
 ```
 FPS is basicly fps as a number.
 LOGS is a bool value of if it should show the debug screen.
 LOG_CONTROLS is a bool value of if it should show the controls you pressed on the debug screen.
+LOG_COUNT is how many lines the debug log should be.
 
 Now that we are done with the settings, we need to initialize our images so they load before the drawing starts.
 
