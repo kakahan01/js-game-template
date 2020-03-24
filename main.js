@@ -10,26 +10,36 @@ var logControls = false;
 var logCount;
 
 document.onkeydown = function (e) {
-    var exits = false;
-    controls.forEach(control => {
-        if (control == e.key) {
-            exists = true;
+    try {
+        var exits = false;
+        controls.forEach(control => {
+            if (control == e.key) {
+                exists = true;
+            }
+        })
+    
+        if (!exits) {
+            controls.push(e.key);
         }
-    })
-
-    if (!exits) {
-        controls.push(e.key);
+    } catch (error) {
+        log("(onkeydown) Error " + error);
     }
+
 }
 
 var images = [];
 
 document.onkeyup = function (e) {
-    controls.forEach(control => {
-        if (control == e.key) {
-            controls.splice(controls.indexOf(control), controls.indexOf(control));
-        }
-    })
+    try {
+        controls.forEach(control => {
+            if (control == e.key) {
+                controls.splice(controls.indexOf(control), controls.indexOf(control));
+            }
+        })
+    } catch (error) {
+        log("(onkeyup) Error " + error);
+    }
+
 }
 
 function log(str) {
@@ -37,51 +47,66 @@ function log(str) {
 }
 
 function resetLog() {
-    if (!showLog) return;
+    try {
+        if (!showLog) return;
 
-    if (_log.length > logCount) {
-        _log.splice(logCount + 1, _log.length - (logCount + 1))
-    }
-
-    ctx.fillStyle = "black";
+        if (_log.length > logCount) {
+            _log.splice(logCount + 1, _log.length - (logCount + 1))
+        }
     
-    for (let i = 0; i < _log.length; i++) {
-        const e = _log[i];
-        ctx.fillText(e, 5, (i * 7) + 15);
+        ctx.fillStyle = "black";
+        
+        for (let i = 0; i < _log.length; i++) {
+            const e = _log[i];
+            ctx.fillText(e, 5, (i * 7) + 15);
+        }
+    } catch (error) {
+        log("(resetLog) Error " + error);
     }
+
 }
 
 function initializeImage(path, width, height) {
-    log("(kickstart) initializeImage: Image " + path);
-    var img = new Image(width, height);
-    img.src = path;
+    try {
+        log("(kickstart) initializeImage: Image " + path);
+        var img = new Image(width, height);
+        img.src = path;
+    
+        images.push(img);
+    } catch (error) {
+        log("(initializeImage) Error " + error);
+    }
 
-    images.push(img);
 }
 
 function initialize() {
-    toDraw.push({
-        type: "rectangle",
-        x: 50,
-        y: 100,
-        width: 100,
-        height: 150,
-        stroke: true,
-        fill: true,
-        style: "green"
-    });
-
-    // FPS COUNTER
-
-    toDraw.push({
-        type:"text",
-        x: 750,
-        y: 10,
-        fill: true,
-        stroke: true,
-        style: "black",
-        content: FPS + " FPS"
-    })
+    try {
+        toDraw.push({
+            type: "rectangle",
+            x: 50,
+            y: 100,
+            width: 100,
+            height: 150,
+            stroke: true,
+            fill: true,
+            style: "green"
+        });
+    
+        // FPS COUNTER
+    
+        toDraw.push({
+            type:"text",
+            x: 750,
+            y: 10,
+            fill: true,
+            stroke: true,
+            style: "black",
+            content: FPS + " FPS"
+        })
+    } catch (error) {
+        log("(initialize) Error " + error);
+    }
+    
 }
 
 var frames = 0;
@@ -99,8 +124,8 @@ function calculateFPS(type) {
 }
 
 function draw() {
-
-    calculateFPS("frame");
+    try {
+        calculateFPS("frame");
 
     if (logControls) {
         controls.forEach(control => {
@@ -151,6 +176,10 @@ function draw() {
     }   
     
     resetLog();
+    } catch (error) {
+        log("(draw) Error " + error);
+    }
+    
 }
 
 function settings(_FPS, _DEBUG, _CONTROLS, _COUNT) {
