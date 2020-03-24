@@ -8,18 +8,19 @@ var asked_fps;
 var controls = [];
 var logControls = false;
 var logCount;
+var disableDraw;
 
 document.onkeydown = function (e) {
     try {
-        var exits = false;
+        var exists;
         controls.forEach(control => {
-            if (control == e.key) {
+            if (control == e.key.toLowerCase()) {
                 exists = true;
             }
         })
     
-        if (!exits) {
-            controls.push(e.key);
+        if (!exists) {
+            controls.push(e.key.toLowerCase());
         }
     } catch (error) {
         log("(onkeydown) Error " + error);
@@ -32,8 +33,9 @@ var images = [];
 document.onkeyup = function (e) {
     try {
         controls.forEach(control => {
-            if (control == e.key) {
-                controls.splice(controls.indexOf(control), controls.indexOf(control));
+            if (control == e.key.toLowerCase()) {
+                controls.splice(controls.indexOf(control), 1);
+                console.log(controls);
             }
         })
     } catch (error) {
@@ -66,22 +68,22 @@ function resetLog() {
 
 }
 
-function initializeImage(path, width, height) {
+function initializeImage(path) {
     try {
         log("(kickstart) initializeImage: Image " + path);
-        var img = new Image(width, height);
+        var img = new Image();
         img.src = path;
-    
+
         images.push(img);
     } catch (error) {
         log("(initializeImage) Error " + error);
     }
-
 }
 
 function initialize() {
     try {
-        toDraw.push({
+        
+        /*toDraw.push({
             type: "rectangle",
             x: 50,
             y: 100,
@@ -90,10 +92,17 @@ function initialize() {
             stroke: true,
             fill: true,
             style: "green"
-        });
+        });*/
     
         // FPS COUNTER
     
+        toDraw.push({
+            type: "image",
+            x: 10,
+            y: 10,
+            imageIndex: 0
+        })
+
         toDraw.push({
             type:"text",
             x: 750,
@@ -103,6 +112,8 @@ function initialize() {
             style: "black",
             content: FPS + " FPS"
         })
+
+
     } catch (error) {
         log("(initialize) Error " + error);
     }
@@ -128,9 +139,10 @@ function draw() {
         calculateFPS("frame");
 
     if (logControls) {
-        controls.forEach(control => {
-            log("(draw) Detected key " + control);
-        })
+        if (controls.length > 0) {
+            log("(draw) Detected keys " + controls.join(", "));
+        } 
+        
     }
 
     initialize();
@@ -140,7 +152,7 @@ function draw() {
     for (let i = 0; i < toDraw.length; i++) {
         var element = toDraw.shift();
 
-        log("(draw) Context 2D: Drawing element " + element.type + " " + i);
+        if (!disableDraw) log("(draw) Context 2D: Drawing element " + element.type + " " + i);
 
         ctx.fillStyle = element.style;
         ctx.strokeStyle = element.style;
@@ -163,7 +175,7 @@ function draw() {
                 }
                 break;
             case "image":
-                if (!element.imageIndex) {
+                if (element.imageIndex == null) {
                     return log("(draw) Context 2D: Could not draw image. No index specified.");
                 }
 
@@ -182,21 +194,22 @@ function draw() {
     
 }
 
-function settings(_FPS, _DEBUG, _CONTROLS, _COUNT) {
+function settings(_FPS, _DEBUG, _CONTROLS, _COUNT, _DISABLE_DRAW) {
     asked_fps = 1000 / _FPS;
     showLog = _DEBUG;
     logControls = _CONTROLS;
     logCount = _COUNT;
+    disableDraw = _DISABLE_DRAW;
 }
 
 function kickstart() {
     // Initialize
 
-    //       FPS, DEBUG, LOG_CONTROLS, LOG_COUNT
-    settings(30, true, false, 20);
+    //       FPS, DEBUG, LOG_CONTROLS, LOG_COUNT, DISABLE_DRAW
+    settings(30, true, true, 20, true);
     
-    //                PATH WIDTH HEIGHT
-    // initializeImage("", 000, 000);
+    //                PATH
+    initializeImage("icon.png");
 
     // START
 
